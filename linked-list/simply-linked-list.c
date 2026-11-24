@@ -23,6 +23,7 @@ Node *findMiddle(Node *head);
 Node *findMiddleV2(Node *head);
 Node * insertAfterValue(Node* head, int value, int afterValue);
 Node *insertBeforeValue(Node *head, int value, int beforeValue);
+Node * deleteByValue(Node * head, int value);
 
 int main() {
     Node * head = NULL;
@@ -71,6 +72,14 @@ int main() {
     } else {
         printf("list is empty\n");
     }
+
+    printf("list after removing 77:\n");
+    head = deleteByValue(head, 77);
+    printList(head);
+
+    printf("list after removing 33:\n");
+    head = deleteByValue(head, 33);
+    printList(head);
 
     free(head);
     return 0;
@@ -326,4 +335,27 @@ void freeList(Node * head) {
         head = head->next;
         free(tmp);
     }
+}
+
+Node * deleteByValue(Node * head, int value) {
+    Node * p = head;
+    Node * prev = NULL;
+
+    while(p != NULL) {
+        if (p->value == value) {
+            break;
+        }
+        prev = p;
+        p = p->next;
+    }
+    if (p == NULL) {
+        printf("value not found\n");
+        return head;
+    }
+    if (prev == NULL) {
+        head = p->next;
+    }
+    prev->next = p->next;
+    free(p);
+    return head;
 }
