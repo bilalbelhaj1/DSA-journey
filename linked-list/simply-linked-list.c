@@ -21,6 +21,8 @@ void freeList(Node * head);
 Node *reverseListV2(Node *head);
 Node *findMiddle(Node *head);
 Node *findMiddleV2(Node *head);
+Node * insertAfterValue(Node* head, int value, int afterValue);
+Node *insertBeforeValue(Node *head, int value, int beforeValue);
 
 int main() {
     Node * head = NULL;
@@ -263,6 +265,58 @@ Node *findMiddleV2(Node *head) {
 
     return slow;
 
+}
+
+Node * insertAfterValue(Node* head, int value, int afterValue) {
+    Node * p = head;
+
+    while(p != NULL) {
+        if (p->value == afterValue) {
+            break;
+        }
+        p = p->next;
+    }
+    
+    if (p == NULL) {
+        printf("%d is not in the list\n", afterValue);
+        return head;
+    }
+    Node* node = createNode(value);
+    if (node == NULL) {
+        return head;
+    }
+    node->next = p->next;
+    p->next = node;
+    return head;
+
+}
+
+Node *insertBeforeValue(Node *head, int value, int beforeValue){
+    Node* current = head;
+    Node* prev = NULL;
+
+    while(current != NULL) {
+        if (current->value == beforeValue) {
+            break;
+        }
+        prev = current;
+        current = current->next;
+    }
+    if (current == NULL) {
+        printf("the before value does not exists\n");
+        return head;
+    }
+    Node * node = createNode(value);
+    if (node == NULL) {
+        return head;
+    }
+    node->next = current;
+    if (head == current) {
+        head = node;
+    } else {
+        prev->next = node;
+    }
+    return head;
 }
 
 void freeList(Node * head) {
