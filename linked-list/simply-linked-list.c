@@ -27,6 +27,7 @@ Node* deleteByValue(Node * head, int value);
 Node* removeAtPosition(Node * head, int pos);
 Node* deleteAllOccurrences(Node* head, int value);
 Node* findNthFromEnd(Node* head, int nth);
+Node* findNthFromEndV2(Node* head, int nth);
 void printListV2(Node* head);
 
 int main() {
@@ -48,6 +49,13 @@ int main() {
         printf("the value of middle node is: %d\n", midd->value);
     } else {
         printf("list is empty\n");
+    }
+
+    Node* node = findNthFromEndV2(head, 11);
+    if (node == NULL) {
+        printf("Invalid position\n");
+    } else {
+        printf("the 11th value is: %d\n", node->value);
     }
 
     printf("test removing all occurences of 3:\n");
@@ -389,3 +397,35 @@ void printListV2(Node* head) {
     printListV2(head->next);
 }
 
+Node* findNthFromEnd(Node* head, int nth) {
+    int n = countNodes(head);
+    if (nth < 1 || nth > n) {
+        return NULL;
+    }
+    if (n == nth) {
+        return head;
+    }
+    int m = 0;
+    Node* p = head;
+    while(m < n - nth && p != NULL) {
+        p = p->next;
+        m++;
+    }
+    return p;
+}
+
+Node* findNthFromEndV2(Node* head, int nth) {
+    Node* fast = head;
+    Node* slow = head;
+
+    for (int i = 0; i < nth; i++) {
+        if (fast == NULL) return NULL;
+        fast = fast->next;
+    }
+
+    while(fast != NULL) {
+        fast = fast->next;
+        slow = slow->next;
+    }
+    return slow;
+}
