@@ -15,7 +15,10 @@ int countNodes(Node * head);
 bool searchNode(Node * head, int value);
 Node * deleteFirst(Node * head);
 Node *  deleteLast(Node * head);
+Node *insertAtPosition(Node *head, int value, int position);
+Node *reverseList(Node *head);
 void freeList(Node * head);
+Node *reverseListV2(Node *head);
 
 int main() {
     Node * head = NULL;
@@ -30,12 +33,32 @@ int main() {
     printf("the list values: \n");
     printList(head);
 
+    printf("test inserting at position 2:\n");
+    head = insertAtPosition(head,33,2);
+    printList(head);
+
+    printf("test inserting at position 0:\n");
+    head = insertAtPosition(head,0,0);
+    printList(head);
+
+    printf("test inserting at position 6:\n");
+    head = insertAtPosition(head,30,6);
+    printList(head);
+
+    printf("test inserting at position 8:\n");
+    head = insertAtPosition(head,90,8);
+    printList(head);
+
     printf("test deleteFirst:\n");
     head =  deleteFirst(head);
     printList(head);
 
     printf("test deleteLast:\n");
     head =  deleteLast(head);
+    printList(head);
+
+    printf("List reversed:\n");
+    head = reverseListV2(head);
     printList(head);
 
     free(head);
@@ -110,6 +133,71 @@ bool searchNode(Node * head, int value) {
         p = p->next;
     }
     return false;
+}
+
+Node *insertAtPosition(Node *head, int value, int position) {
+
+    if (position < 0) {
+        printf("invalid position\n");
+        return head;
+    }
+
+    if (position == 0) return PushFront(head, value);
+    Node * p = head;
+    int m = 0;
+    while(m < position - 1  && p != NULL) {
+        m++;
+        p = p->next;
+    }
+    if (p == NULL) {
+        printf("invalid position\n");
+        return head;
+    }
+    Node * node = createNode(value);
+    if (node == NULL) return head;
+    node->next = p->next;
+    p->next = node;
+    return head;
+}
+
+Node *reverseList(Node *head) {
+    if (head == NULL || head->next == NULL) return head;
+    Node *p, *head2, *q;
+    p = head;
+    while(p->next != NULL) {
+        q = p;
+        p = p->next;
+    }
+    head2 = p;
+    head2->next = q;
+    while(true) {
+        if (p == head) {
+            p->next = NULL;
+            break;
+        }
+        p = q;
+        q = head;
+        while(q->next != p && q != p) {
+            q = q->next;
+        }
+        p->next = q;
+    }
+    return head2;
+}
+
+Node *reverseListV2(Node *head) {
+    Node *prev = NULL;
+    Node *current = head;
+    Node *next = NULL;
+    while (current != NULL)
+    {
+        next = current->next;
+        current->next = prev;
+        prev = current;
+        current = next;
+    }
+    return prev;
+    
 }
 
 Node * deleteFirst(Node * head) {
