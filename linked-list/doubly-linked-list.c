@@ -16,41 +16,33 @@ void insertAtEnd(Node **head, Node **tail, int value);
 void deleteFirst(Node **head, Node **tail);
 void deleteLast(Node **head, Node **tail);
 void insertAtPosition(Node **head, Node **tail, int value, int position);
+void deleteAtPosition(Node **head, Node **tail, int position);
+void reverseList(Node **head, Node **tail);
+void removeDuplicates(Node **head, Node **tail);
 
 int main() {
     Node* head = NULL;
     Node* tail = NULL;
-    printf("Insert 3: ");
+
     insertAtBeginning(&head, &tail, 3);
-    printForward(head);
-    printf("Insert 2: ");
-    insertAtBeginning(&head, &tail, 2);
-    printForward(head);
-    printf("Insert 1: ");
+    insertAtBeginning(&head, &tail, 40);
     insertAtBeginning(&head, &tail, 1);
-    printForward(head);
-    printf("Insert 4: ");
-    insertAtEnd(&head, &tail, 4);
-    printForward(head);
-
-    printf("delete first: ");
-    deleteFirst(&head, &tail);
-    printForward(head);
-    
-    printf("delete Last: ");
-    deleteLast(&head, &tail);
-    printForward(head);
-
-    printf("insert at position 0: ");
+    insertAtEnd(&head, &tail, 1);
     insertAtPosition(&head, &tail, 1, 0);
-    printForward(head);
-
-    printf("insert at position 3: ");
-    insertAtPosition(&head, &tail, 4, 3);
-    printForward(head);
-
-    printf("insert at position 2: ");
+    insertAtPosition(&head, &tail, 1, 3);
     insertAtPosition(&head, &tail, 40, 2);
+    insertAtPosition(&head, &tail, 40, 2);
+    insertAtPosition(&head, &tail, 3, 2);
+    insertAtPosition(&head, &tail, 40, 2);
+    insertAtPosition(&head, &tail, 1, 2);
+    insertAtPosition(&head, &tail, 40, 2);
+
+    printf("List reversed: ");
+    reverseList(&head, &tail);
+    printForward(head);
+
+    printf("Delete duplicates: ");
+    removeDuplicates(&head, &tail);
     printForward(head);
     
     return 0;
@@ -146,6 +138,7 @@ void deleteLast(Node **head, Node **tail) {
     *tail = tmp->prev;
     (*tail) -> next = NULL;
     free(tmp);
+    return;
 }
 
 void insertAtPosition(Node **head, Node **tail, int value, int position) {
@@ -173,10 +166,93 @@ void insertAtPosition(Node **head, Node **tail, int value, int position) {
         insertAtEnd(head, tail,value);
     } else {
         Node* node = createNode(value);
+        if(node == NULL) {
+            printf("failled to create a node\n");
+            return;
+        }
         node ->next = current->next;
         current -> next -> prev = node;
         current->next = node;
         node -> prev = current;
     }
 
+}
+
+void deleteAtPosition(Node **head, Node **tail, int position) {
+    if (*head == NULL) {
+        printf("list is empty\n");
+        return;
+    }
+    if (position < 0) {
+        printf("invalid position\n");
+        return;
+    }
+
+    if (position == 0) {
+        deleteFirst(head, tail); return;
+    }
+
+    int m = 0;
+    Node* p = *head;
+    while(m < position &&  p != NULL) {
+        m++;
+        p = p->next;
+    }
+
+    if (p == NULL) {
+        printf("invalid position\n");
+        return;
+    }
+
+    if (*tail == p) {
+        deleteLast(head,tail); return;
+    }
+
+    p->prev->next = p->next;
+    p->next->prev = p->prev;
+    free(p);
+}
+
+void reverseList(Node **head, Node **tail) {
+    if (*head == NULL) {
+        return;
+    }
+    Node* tmp, *current = *head;
+    while(current != NULL) {
+        tmp = current -> next;
+        current -> next = current -> prev;
+        current -> prev = tmp;
+        current = tmp;
+    }
+    tmp = *head;
+    *head = *tail;
+    *tail = tmp;
+}
+
+void removeDuplicates(Node **head, Node **tail) {
+    if(*head == NULL || (*head) -> next == NULL) return;
+    Node* current = *head;
+    Node* tmp;
+    Node* tmp2;
+    while (current != NULL) 
+    {
+        tmp = current->next;
+        while(tmp != NULL) {
+            if(tmp->value == current->value) {
+                if(tmp == *tail) {
+                    deleteLast(head, tail);
+                    break;
+                }
+                tmp2 = tmp;
+                tmp->prev->next = tmp->next;
+                tmp->next->prev = tmp->prev;
+                tmp = tmp->next;
+                free(tmp2);
+            } else {
+                tmp = tmp->next;
+            }
+        }   
+        current = current -> next;
+    }
+    
 }
