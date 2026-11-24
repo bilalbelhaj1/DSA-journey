@@ -7,63 +7,40 @@ typedef struct Node {
     struct Node * next;
 } Node;
 
-Node * createNode(int value) ;
-Node * PushFront(Node * head, int value);
-Node * PushBack(Node * head, int value);
+Node* createNode(int value) ;
+Node* PushFront(Node * head, int value);
+Node* PushBack(Node * head, int value);
 void printList(Node * head);
 int countNodes(Node * head);
 bool searchNode(Node * head, int value);
-Node * deleteFirst(Node * head);
-Node *  deleteLast(Node * head);
-Node *insertAtPosition(Node *head, int value, int position);
-Node *reverseList(Node *head);
+Node* deleteFirst(Node * head);
+Node* deleteLast(Node * head);
+Node* insertAtPosition(Node *head, int value, int position);
+Node* reverseList(Node *head);
 void freeList(Node * head);
-Node *reverseListV2(Node *head);
-Node *findMiddle(Node *head);
-Node *findMiddleV2(Node *head);
-Node * insertAfterValue(Node* head, int value, int afterValue);
-Node *insertBeforeValue(Node *head, int value, int beforeValue);
-Node * deleteByValue(Node * head, int value);
+Node* reverseListV2(Node *head);
+Node* findMiddle(Node *head);
+Node* findMiddleV2(Node *head);
+Node* insertAfterValue(Node* head, int value, int afterValue);
+Node* insertBeforeValue(Node *head, int value, int beforeValue);
+Node* deleteByValue(Node * head, int value);
+Node* removeAtPosition(Node * head, int pos);
+Node* deleteAllOccurrences(Node* head, int value);
+Node* findNthFromEnd(Node* head, int nth);
+void printListV2(Node* head);
 
 int main() {
     Node * head = NULL;
     head = PushFront(head,3);
     head = PushFront(head,2);
+    head = PushFront(head,3);
     head = PushFront(head,1);
     head = PushBack(head, 4);
-    head = PushBack(head, 5);
+    head = PushBack(head, 3);
     printf("List size is : %d\n", countNodes(head));
     printf("does the value %d exists: %d\n", 8, searchNode(head, 8));
     printf("does the value %d exists: %d\n", 4, searchNode(head, 4));
     printf("the list values: \n");
-    printList(head);
-
-    printf("test inserting at position 2:\n");
-    head = insertAtPosition(head,33,2);
-    printList(head);
-
-    printf("test inserting at position 0:\n");
-    head = insertAtPosition(head,0,0);
-    printList(head);
-
-    printf("test inserting at position 6:\n");
-    head = insertAtPosition(head,30,6);
-    printList(head);
-
-    printf("test inserting at position 8:\n");
-    head = insertAtPosition(head,90,8);
-    printList(head);
-
-    printf("test deleteFirst:\n");
-    head =  deleteFirst(head);
-    printList(head);
-
-    printf("test deleteLast:\n");
-    head =  deleteLast(head);
-    printList(head);
-
-    printf("List reversed:\n");
-    head = reverseListV2(head);
     printList(head);
 
     Node * midd = findMiddleV2(head);
@@ -73,14 +50,9 @@ int main() {
         printf("list is empty\n");
     }
 
-    printf("list after removing 77:\n");
-    head = deleteByValue(head, 77);
-    printList(head);
-
-    printf("list after removing 33:\n");
-    head = deleteByValue(head, 33);
-    printList(head);
-
+    printf("test removing all occurences of 3:\n");
+    head = deleteAllOccurrences(head,3);
+    printListV2(head);
     free(head);
     return 0;
 }
@@ -359,3 +331,61 @@ Node * deleteByValue(Node * head, int value) {
     free(p);
     return head;
 }
+
+Node * removeAtPosition(Node * head, int pos) {
+    Node * p = head;
+    Node *prev = NULL;
+    int m = 0;
+    while(m < pos && p != NULL) {
+        m++;
+        prev = p;
+        p = p->next;
+    }
+    if (p == NULL) {
+        printf("invalid position\n");
+        return head;
+    }
+    if (prev == NULL) {
+        head = p->next;
+    } else {
+        prev->next = p->next;
+    }
+    free(p);
+    return head;
+
+}
+
+Node* deleteAllOccurrences(Node* head, int value) {
+    Node *current, *prev, *tmp;
+    current = head;
+    prev = NULL;
+
+    while (current != NULL)
+    {
+        tmp = current->next;
+        if (current->value == value) {
+            if(prev == NULL) {
+                head = current->next;
+            } else {
+                prev->next = current->next;
+            }
+            free(current);
+            current = tmp;
+        } else {
+            prev = current;
+            current = tmp;
+        }
+    }
+
+    return head;
+}
+
+void printListV2(Node* head) {
+    if (head == NULL) {
+        printf("NULL\n");
+        return;
+    }
+    printf("%d => ", head->value);
+    printListV2(head->next);
+}
+
