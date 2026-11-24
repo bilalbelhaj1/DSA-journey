@@ -19,6 +19,8 @@ Node *insertAtPosition(Node *head, int value, int position);
 Node *reverseList(Node *head);
 void freeList(Node * head);
 Node *reverseListV2(Node *head);
+Node *findMiddle(Node *head);
+Node *findMiddleV2(Node *head);
 
 int main() {
     Node * head = NULL;
@@ -60,6 +62,13 @@ int main() {
     printf("List reversed:\n");
     head = reverseListV2(head);
     printList(head);
+
+    Node * midd = findMiddleV2(head);
+    if (midd != NULL) {
+        printf("the value of middle node is: %d\n", midd->value);
+    } else {
+        printf("list is empty\n");
+    }
 
     free(head);
     return 0;
@@ -224,6 +233,36 @@ Node *  deleteLast(Node * head) {
     p->next = NULL;
     free(tmp);
     return head;
+}
+
+Node *findMiddle(Node *head) {
+    if (head == NULL) {
+        printf("list is empty");
+        return NULL;
+    }
+
+    int n = countNodes(head);
+    int m = 0;
+    Node * p = head;
+    while (m < n/2)
+    {
+        p = p->next;
+        m++;
+    }
+    return p;
+    
+}
+
+Node *findMiddleV2(Node *head) {
+    Node *fast = head,*slow=head;
+
+    while (fast != NULL && fast->next != NULL) {
+        slow = slow->next;
+        fast = fast->next->next;
+    }
+
+    return slow;
+
 }
 
 void freeList(Node * head) {
