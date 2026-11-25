@@ -24,7 +24,52 @@ void display(Queue *q);
 void freeQueue(Queue *q);
 
 int main() {
+    Queue q;
+    initQueue(&q);
 
+    // Test 1: Empty queue
+    printf("Is empty? %d\n", isEmpty(&q));
+
+    // Test 2: Enqueue elements
+    enqueue(&q, 10);
+    enqueue(&q, 20);
+    enqueue(&q, 30);
+    enqueue(&q, 40);
+
+    display(&q);
+    printf("\n");
+
+    // Test 3: Peek
+    printf("Front element: %d\n", peek(&q));
+
+    // Test 4: Dequeue
+    printf("Dequeued: %d\n", dequeue(&q));
+    printf("Dequeued: %d\n", dequeue(&q));
+
+    display(&q);
+    printf("\n");
+
+    // Test 5: Dequeue remaining elements
+    printf("Dequeued: %d\n", dequeue(&q));
+    printf("Dequeued: %d\n", dequeue(&q));
+
+    // Test 6: Check empty queue
+    printf("Is empty? %d\n", isEmpty(&q));
+    display(&q);
+
+    // Test 7: Reuse queue after emptying it
+    enqueue(&q, 100);
+    enqueue(&q, 200);
+
+    display(&q);
+    printf("\n");
+
+    // Test 8: Free memory
+    freeQueue(&q);
+
+    printf("Memory freed successfully.\n");
+
+    return 0;
 }
 
 void initQueue(Queue* q) {
