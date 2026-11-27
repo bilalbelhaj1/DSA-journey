@@ -8,6 +8,14 @@ typedef struct Node
     struct Node* right;
 } Node;
 
+typedef struct Queue
+{
+    Node* data[100];
+    int front;
+    int rear;
+} Queue;
+
+
 int max(int a, int b);
 Node* createNode(int value);
 int isEmpty(Node* root);
@@ -17,6 +25,11 @@ void freeTree(Node* root);
 void inOrder(Node* root);
 void preOrder(Node* root);
 void postOrder(Node* root);
+void breadthFirstSearch(Node* root);
+
+int QueEmpty(Queue* q);
+void enqueue(Queue* q, Node* node);
+Node* dequeue(Queue* q);
 
 int main() {
     Node* root = createNode(5);
@@ -51,8 +64,36 @@ int main() {
     postOrder(root);
     printf("\n");
 
+    printf("Breadth first Search: ");
+    breadthFirstSearch(root);
+    printf("\n");
+
     freeTree(root);
     return 0;
+}
+
+int QueEmpty(Queue* q) {
+    return q->front == -1;
+}
+
+void enqueue(Queue* q, Node* node) {
+    if (QueEmpty(q)) {
+        q->front = 0;
+    }
+    q->rear++;
+    q->data[q->rear] = node;
+}
+
+Node* dequeue(Queue* q)  {
+    if (QueEmpty(q)) return NULL;
+    int index = q->front;
+    if (q->front == q->rear) {
+        q->front = -1;
+        q->rear = -1;
+    } else {
+        q->front++;
+    }
+    return q->data[index];
 }
 
 Node* createNode(int value) {
@@ -87,15 +128,11 @@ int findHeight(Node* root) {
 }
 
 void freeTree(Node* root) {
-    if (root== NULL) return;
-    if (root->left == NULL && root->right == NULL) {
-        printf("release %d\n", root->data);
-        free(root);
-        return;
-    }
+    if (root == NULL) return;
+
     freeTree(root->left);
     freeTree(root->right);
-    printf("release %d\n", root->data);
+    
     free(root);
 }
 
@@ -119,4 +156,21 @@ void postOrder(Node* root) {
     postOrder(root->left);
     postOrder(root->right);
     printf("%d ", root->data);
+}
+
+void breadthFirstSearch(Node* root) {
+    if (root == NULL) return;
+    Queue q;
+    q.front = -1;
+    q.rear = -1;
+    Node* tmp;
+    enqueue(&q, root);
+    while (QueEmpty(&q) != 1)
+    {
+        tmp = dequeue(&q);
+        if (tmp->left != NULL) enqueue(&q, tmp->left);
+        if (tmp->right != NULL) enqueue(&q, tmp-> right);
+        printf("%d  ", tmp->data);
+    }
+    
 }
