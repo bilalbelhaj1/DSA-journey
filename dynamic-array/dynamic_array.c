@@ -7,7 +7,7 @@ typedef struct DynamicArray {
     int capacity;
 } DynamicArray;
 
-void initArray(DynamicArray* arr);
+int initArray(DynamicArray* arr);
 int get(DynamicArray*arr, int i);
 int set(DynamicArray*arr, int i, int value);
 void push_back(DynamicArray*arr, int value);
@@ -17,27 +17,29 @@ void print_dynamic_array(DynamicArray* arr);
 
 int main() {
     DynamicArray da;
-    initArray(&da);
-    push_back(&da, 3);
-    set(&da,0,1);
-    push_back(&da, 2);
+    if (initArray(&da) == 0) {
+        return 1;
+    }
+    push_back(&da, 10);
+    push_back(&da, 20);
+    push_back(&da, 30);
+    push_back(&da, 40);
+    push_back(&da, 50);
     print_dynamic_array(&da);
-    push_back(&da, 3);
-    push_back(&da, 4);
-    printf("Poped %d \n", pop_back(&da));
+    removee(&da, 1);
     print_dynamic_array(&da);
-    printf("value at 1: %d\n", get(&da, 1));
     return 0;
 }
 
-void initArray(DynamicArray* arr) {
+int initArray(DynamicArray* arr) {
     arr->size = 0;
     arr->capacity = 2;
     arr->data = malloc(arr->capacity*sizeof(int));
     if (arr->data == NULL) {
         printf("Afailled to allocate Memory\n");
-        return;
+        return 0;
     }
+    return 1;
 }
 
 int get(DynamicArray*arr, int i) {
@@ -48,21 +50,18 @@ int get(DynamicArray*arr, int i) {
     return arr->data[i];
 }
 int set(DynamicArray*arr, int i, int value) {
-    if (i < 0 ||  i > arr->size) {
+    if (i < 0 ||  i >= arr->size) {
         printf("Invalid index\n");
         return 0;
     }
     arr->data[i] = value;
-    if (arr->size == i) {
-        arr->size++;
-    }
     return 1;
 
 }
 void push_back(DynamicArray*arr, int value) {
     if (arr->size == arr->capacity) {
         arr->capacity *= 2;
-        int* tmp = realloc(arr->data, arr->capacity); {
+        int* tmp = realloc(arr->data, arr->capacity*sizeof(int)); {
             if (tmp == NULL) {
                 printf("failled to resize the array\n");
                 arr->capacity /= 2;
@@ -79,18 +78,37 @@ void removee(DynamicArray *arr, int i) {
         printf("Invalid index\n");
         return;
     }
-    for (int j = i; j < arr->size - 2; j++) {
+    for (int j = i; j <= arr->size - 2; j++) {
         arr->data[j] = arr->data[j+1];
     }
     arr->size--;
 }
 int pop_back(DynamicArray* arr) {
+    
     if (arr->size == 0) {
         printf("Array is empty\n");
-        exit(1);
+        return -1;
     }
+
+    int value = arr->data[arr->size - 1];
     arr->size--;
-    return arr->data[arr->size];
+
+    if (arr->size <= arr->capacity / 4 && arr->capacity > 2) {
+
+        int new_capacity = arr->capacity / 2;
+
+        int* tmp = realloc(
+            arr->data,
+            new_capacity * sizeof(int)
+        );
+
+        if (tmp != NULL) {
+            arr->data = tmp;
+            arr->capacity = new_capacity;
+        }
+    }
+
+    return value;
 }
 
 void print_dynamic_array(DynamicArray* arr) {
